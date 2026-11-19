@@ -68,6 +68,7 @@ public class InventoryEventHandler {
             LOGGER.info("Ignoring StockReserved event {} for order in state {}",
             event.eventId(), order.getStatus());
          }
+    }
 
     @Transactional
     public void handle(StockRejected event) {
