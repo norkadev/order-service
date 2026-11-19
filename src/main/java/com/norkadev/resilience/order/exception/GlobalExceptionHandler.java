@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
@@ -72,6 +73,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail handleUnexpected(Exception exception) {
         LOGGER.error("Unhandled request error", exception);
         return problem(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+    }
+
+    @ExceptionHandler({ PropertyReferenceException.class, InvalidDataAccessApiUsageException.class })
+    public ProblemDetail handleInvalidSort(Exception ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Invalid sort property. Verify that the property name is correct and matches the entity's field names.");
+        problem.setTitle("Bad Request");
+        return problem;
     }
 
     private ProblemDetail problem(HttpStatus status, String detail) {
