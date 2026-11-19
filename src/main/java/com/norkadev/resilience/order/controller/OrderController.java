@@ -22,6 +22,9 @@ import com.norkadev.resilience.order.dto.OrderResponse;
 import com.norkadev.resilience.order.exception.IdempotencyKeyMissingException;
 import com.norkadev.resilience.order.service.OrderService;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -43,7 +46,7 @@ public class OrderController {
             @ApiResponse(responseCode = "422", description = "Idempotency key reused with a different request")
     })
     public ResponseEntity<OrderResponse> createOrder(
-            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
+            @Parameter(name = "Idempotency-Key", description = "Clave única (UUID) para evitar órdenes duplicadas ante reintentos.", required = true, in = ParameterIn.HEADER, example = "550e8400-e29b-41d4-a716-446655440000", schema = @Schema(type = "string", format = "uuid")) @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
             @Valid @RequestBody CreateOrderRequest request) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             throw new IdempotencyKeyMissingException();

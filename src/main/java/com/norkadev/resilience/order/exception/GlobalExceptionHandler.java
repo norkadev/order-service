@@ -64,11 +64,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "The order was modified concurrently; retry the request");
     }
 
-    @ExceptionHandler(PropertyReferenceException.class)
-    ProblemDetail handleInvalidSort(PropertyReferenceException exception) {
-        return problem(HttpStatus.BAD_REQUEST, "Invalid sort property");
-    }
-
     @ExceptionHandler(Exception.class)
     ProblemDetail handleUnexpected(Exception exception) {
         LOGGER.error("Unhandled request error", exception);
